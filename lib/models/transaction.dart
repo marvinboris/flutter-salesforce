@@ -1,15 +1,23 @@
 class Transaction {
-  final String name;
-  final double amount;
+  final String? id;
+  final String client;
   final String product;
-  final DateTime date;
+  final DateTime? date;
   final int qty;
 
   const Transaction({
-    required this.name,
-    required this.amount,
+    this.id,
+    required this.client,
     required this.product,
-    required this.date,
+    this.date,
     required this.qty,
   });
+
+  factory Transaction.fromJson(Map<String, dynamic> data) => Transaction(
+        id: data['_id'],
+        client: data['client'],
+        product: data['product'],
+        qty: data['qty'],
+        date: DateTime.parse(data['date']),
+      );
 }

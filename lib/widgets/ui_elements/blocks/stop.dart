@@ -101,7 +101,7 @@ class UIStopBlock extends StatelessWidget {
               context,
               icon: Icons.access_time_outlined,
               value:
-                  '${Dates.time(data.startTime)} - ${Dates.time(data.endTime)}',
+                  '${Dates.time(data.startTime)} - ${data.endTime != null ? Dates.time(data.endTime!) : DateTime.now().toIso8601String()}',
               color: const Color(0xffD68000),
             ),
           ],
@@ -123,7 +123,9 @@ class UIStopBlock extends StatelessWidget {
         borderRadius: BorderRadius.circular(300),
       ),
       child: Text(
-        '${data.endTime.difference(data.startTime).inMinutes} min',
+        data.endTime != null
+            ? '${data.endTime?.difference(data.startTime).inMinutes} min'
+            : '',
         style: const TextStyle(
           color: color,
           fontFamily: 'Euclid Circular A',

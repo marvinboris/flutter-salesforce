@@ -6,8 +6,13 @@ import './connected_products.dart';
 class MainModel extends Model
     with
         ConnectedProducts,
-        UsersModel,
-        ProductsModel,
-        ClientsModel,
         AppointmentsModel,
+        ClientsModel,
+        InvoicesModel,
+        MethodsModel,
+        ProductsModel,
+        ShopsModel,
+        StopsModel,
+        TransactionsModel,
+        UsersModel,
         UtilityModel {}

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import '../../../models/client.dart';
 
@@ -129,9 +130,11 @@ class UIClientBlock extends StatelessWidget {
                 height: 66,
                 decoration: BoxDecoration(
                   color: Theme.of(context).primaryColor,
-                  image: data.photo != null
+                  image: data.photo != null && !data.photo!.endsWith('.svg')
                       ? DecorationImage(
-                          image: AssetImage('images/clients/${data.photo!}'),
+                          image: NetworkImage(
+                            '${dotenv.env['APP_URL']}${data.photo!}',
+                          ),
                           fit: BoxFit.cover,
                         )
                       : null,

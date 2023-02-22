@@ -5,7 +5,7 @@ enum AppointmentStatus {
 }
 
 class Appointment {
-  final String id;
+  final String? id;
   final DateTime date;
   final String name;
   final String shop;
@@ -15,7 +15,7 @@ class Appointment {
   final AppointmentStatus status;
 
   Appointment({
-    required this.id,
+    this.id,
     required this.date,
     required this.name,
     required this.shop,
@@ -24,4 +24,19 @@ class Appointment {
     required this.company,
     this.status = AppointmentStatus.Incoming,
   });
+
+  factory Appointment.fromJson(dynamic data) => Appointment(
+        id: data['_id'],
+        date: DateTime.parse(data['date']),
+        name: data['client'],
+        shop: data['shop'],
+        object: data['object'],
+        location: data['location'],
+        company: data['company'],
+        status: [
+          AppointmentStatus.Incoming,
+          AppointmentStatus.Done,
+          AppointmentStatus.Cancelled,
+        ][data['status']],
+      );
 }

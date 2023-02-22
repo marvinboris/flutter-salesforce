@@ -42,7 +42,7 @@ class UIBottomNavigationBar extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           ElevatedButton(
-            onPressed: () => Navigator.of(context).pushNamed('/dashboard'),
+            onPressed: () => Navigator.of(context).pushNamed('/'),
             style: ElevatedButton.styleFrom(
               backgroundColor: isWhite
                   ? Theme.of(context).secondaryHeaderColor

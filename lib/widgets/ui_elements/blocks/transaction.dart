@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../models/transaction.dart';
+
 import '../../../widgets/ui_elements/title.dart';
 
 class UITransactionBlock extends StatelessWidget {
@@ -27,7 +28,7 @@ class UITransactionBlock extends StatelessWidget {
             children: [
               Expanded(
                 child: UITitle(
-                  data.name,
+                  data.client,
                   fontWeight: FontWeight.w700,
                   fontSize: 18,
                 ),
@@ -48,7 +49,7 @@ class UITransactionBlock extends StatelessWidget {
                     const SizedBox(width: 3),
                     Expanded(
                       child: UITitle(
-                        '${(data.amount / 1000).toStringAsFixed(1)}k',
+                        '${(data.qty / 1000).toStringAsFixed(1)}k',
                         color: const Color(0xff00A141),
                         fontWeight: FontWeight.w700,
                         fontSize: 16,
@@ -72,7 +73,7 @@ class UITransactionBlock extends StatelessWidget {
           Row(
             children: [
               Text(
-                '${data.date.day}.${data.date.month}.${data.date.year}',
+                '${data.date?.day}.${data.date?.month}.${data.date?.year}',
                 style: const TextStyle(
                   fontFamily: 'Euclid Circular A',
                   fontWeight: FontWeight.w400,

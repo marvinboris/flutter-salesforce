@@ -1,7 +1,9 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:salesforce/scoped_models/main.dart';
 import 'package:salesforce/widgets/ui_elements/navigation/section_title.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 import '../models/appointment.dart';
 
@@ -75,85 +77,23 @@ class _MySchedulePageState extends State<MySchedulePage> {
   Widget _buildAppointmentList(
     BuildContext context,
   ) {
-    final List<Appointment> appointments = [
-      Appointment(
-        id: Random().toString(),
-        date: DateTime(2023, 10, 18),
-        name: 'Mr Jean Clenon M.',
-        shop: 'Mahima',
-        object: 'Stock replenish',
-        location: 'DLA - Bonamoussadi, face...',
-        company: 'Chococam Dla',
-      ),
-      Appointment(
-        id: Random().toString(),
-        date: DateTime(2023, 10, 16),
-        name: 'Joseph Kamdem',
-        shop: 'Santa Lucia',
-        object: 'Stock replenish',
-        location: 'DLA - Bonanjo messapresse...',
-        company: 'Fashion Bestifier',
-        status: AppointmentStatus.Done,
-      ),
-      Appointment(
-        id: Random().toString(),
-        date: DateTime(2023, 10, 14),
-        name: 'James Howare',
-        shop: 'Sesam Market',
-        object: 'Stock replenish',
-        location: 'DLA - Bonanjo messapresse...',
-        company: 'Fashion Bestifier',
-        status: AppointmentStatus.Cancelled,
-      ),
-      Appointment(
-        id: Random().toString(),
-        date: DateTime(2023, 10, 12),
-        name: 'Calisto Miea',
-        shop: 'Carrefour Market',
-        object: 'Stock replenish',
-        location: 'DLA - Bonanjo messapresse...',
-        company: 'Fashion Bestifier',
-        status: AppointmentStatus.Done,
-      ),
-      Appointment(
-        id: Random().toString(),
-        date: DateTime(2023, 10, 9),
-        name: 'Joseph Kamdem',
-        shop: 'Santa Lucia',
-        object: 'Stock replenish',
-        location: 'DLA - Bonapriso Orange cm..',
-        company: 'Fashion Bestifier',
-        status: AppointmentStatus.Done,
-      ),
-      Appointment(
-        id: Random().toString(),
-        date: DateTime(2023, 10, 7),
-        name: 'Calisto Miea',
-        shop: 'Carrefour Market',
-        object: 'Goods return',
-        location: 'DLA - Bonaberi Ndobo...',
-        company: 'Fashion Bestifier',
-        status: AppointmentStatus.Cancelled,
-      ),
-      Appointment(
-        id: Random().toString(),
-        date: DateTime(2023, 10, 6),
-        name: 'Perrera Consalo',
-        shop: 'Meno',
-        object: 'Business Metting',
-        location: 'DLA - Ndokoti Brasserie',
-        company: 'SABC',
-      ),
-    ];
-    return MediaQuery.removePadding(
-      context: context,
-      removeTop: true,
-      child: ListView.builder(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        itemCount: appointments.length,
-        itemBuilder: (context, index) =>
-            UIAppointmentBlock(appointments[index]),
+    return ScopedModelDescendant(
+      builder: (
+        context,
+        child,
+        MainModel model,
+      ) =>
+          MediaQuery.removePadding(
+        context: context,
+        removeTop: true,
+        child: ListView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: model.allAppointments.length,
+          itemBuilder: (context, index) => UIAppointmentBlock(
+            model.allAppointments[index],
+          ),
+        ),
       ),
     );
   }

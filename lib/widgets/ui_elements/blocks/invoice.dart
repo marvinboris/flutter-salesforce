@@ -235,7 +235,7 @@ class UIInvoiceBlock extends StatelessWidget {
               ),
               const SizedBox(width: 5),
               UITitle(
-                data.paymentMethod,
+                data.method,
                 fontFamily: 'Euclid Circular A',
                 fontWeight: FontWeight.w500,
                 fontSize: 12,

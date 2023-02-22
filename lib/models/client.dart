@@ -23,4 +23,18 @@ class Client {
     this.photo,
     this.status = ClientStatus.Active,
   });
+
+  factory Client.fromJson(Map<String, dynamic> data) => Client(
+        id: data['_id'],
+        name: data['name'],
+        phone: data['phone'],
+        email: data['email'],
+        joinedAt: DateTime.parse(data['joinedAt']),
+        location: data['location'],
+        photo: data['photo'],
+        status: [
+          ClientStatus.Active,
+          ClientStatus.Inactive,
+        ][data['status']],
+      );
 }

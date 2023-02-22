@@ -10,4 +10,11 @@ class Product {
     required this.price,
     this.promo,
   });
+
+  factory Product.fromJson(Map<String, dynamic> data) => Product(
+        id: data['_id'],
+        title: data['title'],
+        price: data['price'],
+        promo: data['promo'],
+      );
 }

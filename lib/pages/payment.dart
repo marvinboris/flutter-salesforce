@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:salesforce/widgets/ui_elements/title.dart';
+
+import '../scoped_models/main.dart';
 
 import '../widgets/ui_elements/navigation/bottom_navigation_bar.dart';
 import '../widgets/ui_elements/navigation/header.dart';
 import '../widgets/ui_elements/navigation/section_title.dart';
+import '../widgets/ui_elements/title.dart';
 
 class DuePaymentPage extends StatefulWidget {
-  const DuePaymentPage({super.key});
+  final MainModel model;
+
+  const DuePaymentPage(
+    this.model, {
+    super.key,
+  });
 
   @override
   State<StatefulWidget> createState() {
@@ -16,42 +23,48 @@ class DuePaymentPage extends StatefulWidget {
 
 class _DuePaymentPageState extends State<DuePaymentPage> {
   final Map<String, dynamic> _formData = {
-    'paymentMethod': 'Credit / Debit Card',
+    'method': '',
     'name': '',
     'cardNumber': '',
     'expDate': '',
     'cvv': '',
   };
 
+  @override
+  void initState() {
+    final methods = widget.model.allMethods;
+    _formData['method'] = methods.isNotEmpty ? methods[0].name : '';
+    super.initState();
+  }
+
   Widget _buildSelectField(
     BuildContext context,
     List<String> list,
     String value,
     void Function(String?)? onChanged,
-  ) {
-    return DropdownButtonHideUnderline(
-      child: DropdownButton<String>(
-        isExpanded: true,
-        icon: const Icon(Icons.keyboard_arrow_down),
-        value: value,
-        onChanged: onChanged,
-        items: list
-            .map(
-              (value) => DropdownMenuItem(
-                value: value,
-                child: Text(
-                  value,
-                  style: const TextStyle(
-                    fontFamily: 'Euclid Circular A',
-                    fontSize: 14,
+  ) =>
+      DropdownButtonHideUnderline(
+        child: DropdownButton<String>(
+          isExpanded: true,
+          icon: const Icon(Icons.keyboard_arrow_down),
+          value: value,
+          onChanged: onChanged,
+          items: list
+              .map(
+                (value) => DropdownMenuItem(
+                  value: value,
+                  child: Text(
+                    value,
+                    style: const TextStyle(
+                      fontFamily: 'Euclid Circular A',
+                      fontSize: 14,
+                    ),
                   ),
                 ),
-              ),
-            )
-            .toList(),
-      ),
-    );
-  }
+              )
+              .toList(),
+        ),
+      );
 
   Widget _buildInputField(
     BuildContext context, {
@@ -59,77 +72,70 @@ class _DuePaymentPageState extends State<DuePaymentPage> {
     String? hintText,
     String? Function(String?)? validator,
     String? Function(String?)? onSaved,
-  }) {
-    return TextFormField(
-      decoration: InputDecoration(
-        border: InputBorder.none,
-        labelText: labelText,
-        hintText: hintText,
-        hintStyle: const TextStyle(color: Color(0x375F5F5F)),
-      ),
-      style: const TextStyle(
-        fontWeight: FontWeight.w500,
-        fontFamily: 'Euclid Circular A',
-      ),
-      validator: validator,
-      onSaved: onSaved,
-    );
-  }
+  }) =>
+      TextFormField(
+        decoration: InputDecoration(
+          border: InputBorder.none,
+          labelText: labelText,
+          hintText: hintText,
+          hintStyle: const TextStyle(color: Color(0x375F5F5F)),
+        ),
+        style: const TextStyle(
+          fontWeight: FontWeight.w500,
+          fontFamily: 'Euclid Circular A',
+        ),
+        validator: validator,
+        onSaved: onSaved,
+      );
 
   Widget _buildFormInputField(
     BuildContext context, {
     required Widget child,
     IconData? icon,
     Color? color = const Color(0x33D9D9D9),
-  }) {
-    return Container(
-      height: 60,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(300),
-        color: color,
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          icon != null
-              ? Container(
-                  padding: const EdgeInsets.only(left: 19, right: 16),
-                  child: Icon(
-                    icon,
-                    color: const Color(0xb2444040),
-                  ),
-                )
-              : const SizedBox(width: 29),
-          Expanded(
-            child: child,
-          ),
-          const SizedBox(width: 11),
-        ],
-      ),
-    );
-  }
+  }) =>
+      Container(
+        height: 60,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(300),
+          color: color,
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            icon != null
+                ? Container(
+                    padding: const EdgeInsets.only(left: 19, right: 16),
+                    child: Icon(
+                      icon,
+                      color: const Color(0xb2444040),
+                    ),
+                  )
+                : const SizedBox(width: 29),
+            Expanded(
+              child: child,
+            ),
+            const SizedBox(width: 11),
+          ],
+        ),
+      );
 
-  Widget _buildPaymentMethodSearchField(
+  Widget _buildmethodSearchField(
     BuildContext context,
-  ) {
-    final List<String> paymentMethods = [
-      'Credit / Debit Card',
-      'Mobile Payment',
-    ];
-    return _buildFormInputField(
-      context,
-      child: _buildSelectField(
+  ) =>
+      _buildFormInputField(
         context,
-        paymentMethods,
-        _formData['paymentMethod'],
-        (String? value) => setState(() {
-          _formData['paymentMethod'] = value;
-        }),
-      ),
-      icon: Icons.credit_card_outlined,
-      color: Theme.of(context).primaryColor.withOpacity(.1),
-    );
-  }
+        child: _buildSelectField(
+          context,
+          widget.model.allMethods.map((m) => m.name).toList(),
+          _formData['method'],
+          (String? value) => setState(() {
+            _formData['method'] = value;
+          }),
+        ),
+        icon: Icons.credit_card_outlined,
+        color: Theme.of(context).primaryColor.withOpacity(.1),
+      );
 
   Widget _buildButton(
     BuildContext context,
@@ -214,7 +220,7 @@ class _DuePaymentPageState extends State<DuePaymentPage> {
           ],
         ),
         const SizedBox(height: 25),
-        _buildPaymentMethodSearchField(context),
+        _buildmethodSearchField(context),
         const SizedBox(height: 33),
         _buildSeparator(context),
         const SizedBox(height: 26),

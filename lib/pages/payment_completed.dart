@@ -113,8 +113,7 @@ class _PaymentCompletedState extends State<PaymentCompleted> {
                 context,
                 child: 'Go to dashboard',
                 icon: Icons.arrow_forward_outlined,
-                onPressed: (() =>
-                    Navigator.of(context).pushNamed('/dashboard')),
+                onPressed: () => Navigator.of(context).pushNamed('/'),
               ),
             ],
           ),

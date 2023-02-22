@@ -2,6 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:salesforce/scoped_models/main.dart';
+import 'package:scoped_model/scoped_model.dart';
 // ignore: import_of_legacy_library_into_null_safe
 
 import './layout.dart';
@@ -20,17 +22,17 @@ class AuthLoginPage extends StatefulWidget {
 
 class _AuthLoginPageState extends State<AuthLoginPage> {
   final Map<String, dynamic> _formData = {
-    'username': '',
+    'email': '',
     'password': '',
   };
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  Widget _buildUsernameField() {
+  Widget _buildEmailField() {
     return UIFormInput(
-      icon: Icons.person_outline,
-      hintText: 'Username',
+      icon: Icons.email_outlined,
+      hintText: 'commercial@geotrack.com',
       onSaved: (String? value) {
-        _formData['username'] = value;
+        _formData['email'] = value;
       },
     );
   }
@@ -46,84 +48,104 @@ class _AuthLoginPageState extends State<AuthLoginPage> {
   }
 
   Widget _buildSubmitButton(BuildContext context) {
-    return UISubmitElevatedButton(
-      'LOGIN',
-      maxWidth: 1000,
-      icon: const Icon(
-        Icons.arrow_forward,
-        size: 24,
-        color: Color(0x66FFFFFF),
-      ),
-      onPressed: () => _submitForm(context),
+    return ScopedModelDescendant(
+      builder: (
+        context,
+        child,
+        MainModel model,
+      ) =>
+          model.isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : UISubmitElevatedButton(
+                  'LOGIN',
+                  maxWidth: 1000,
+                  icon: const Icon(
+                    Icons.arrow_forward,
+                    size: 24,
+                    color: Color(0x66FFFFFF),
+                  ),
+                  onPressed: () => _submitForm(
+                    context,
+                    model.authLogin,
+                  ),
+                ),
     );
   }
 
-  void _submitForm(BuildContext context) async {
-    Navigator.of(context).pushNamed('/dashboard');
-    return;
+  void _submitForm(
+    BuildContext context,
+    Function authenticate,
+  ) async {
     if (!_formKey.currentState!.validate()) return;
     _formKey.currentState?.save();
-    // final Map<String, dynamic> successInformation = await authenticate(
-    //     _formData['username'], _formData['password']);
-    // if (!successInformation['success']) {
-    //   showDialog(
-    //       context: context,
-    //       builder: (BuildContext context) {
-    //         return AlertDialog(
-    //           title: const Text('An Error Occurred!'),
-    //           content: Text(successInformation['message']),
-    //           actions: [
-    //             TextButton(
-    //               child: const Text('Okay'),
-    //               onPressed: () => Navigator.of(context).pop(),
-    //             )
-    //           ],
-    //         );
-    //       });
-    // }
+    final Map<String, dynamic> successInformation = await authenticate(
+      _formData['email'],
+      _formData['password'],
+    );
+    if (!successInformation['success']) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('An Error Occurred!'),
+              content: Text(successInformation['message']),
+              actions: [
+                TextButton(
+                  child: const Text('Okay'),
+                  onPressed: () => Navigator.of(context).pop(),
+                )
+              ],
+            );
+          });
+    }
   }
 
   @override
-  Widget build(BuildContext context) {
-    // ignore: todo
-    // TODO: implement build
-    return AuthLayout(
-      title: 'Staff Login',
-      subtitle: 'Login to admin',
-      icon: SvgPicture.asset('images/iconly-glass-lock.svg', height: 61),
-      containerWidget: Column(children: [
-        _buildUsernameField(),
-        const SizedBox(height: 18),
-        _buildPasswordField(),
-        const SizedBox(height: 18),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            const Text(
-              "Forgot password ?",
-              style: TextStyle(
-                fontFamily: 'Euclid Circular A',
+  Widget build(
+    BuildContext context,
+  ) =>
+      AuthLayout(
+        title: 'Staff Login',
+        subtitle: 'Login to admin',
+        icon: SvgPicture.asset('images/iconly-glass-lock.svg', height: 61),
+        containerWidget: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              _buildEmailField(),
+              const SizedBox(height: 18),
+              _buildPasswordField(),
+              const SizedBox(height: 18),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  const Text(
+                    "Forgot password ?",
+                    style: TextStyle(
+                      fontFamily: 'Euclid Circular A',
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () =>
+                        Navigator.of(context).pushNamed('/auth/reset'),
+                    style: ButtonStyle(
+                        padding: MaterialStateProperty.all<EdgeInsets>(
+                            EdgeInsets.zero)),
+                    child: Text(
+                      'Reset',
+                      style: TextStyle(
+                        fontFamily: 'Euclid Circular A',
+                        color: Theme.of(context).primaryColor,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  )
+                ],
               ),
-            ),
-            TextButton(
-              onPressed: () => Navigator.of(context).pushNamed('/auth/reset'),
-              style: ButtonStyle(
-                  padding:
-                      MaterialStateProperty.all<EdgeInsets>(EdgeInsets.zero)),
-              child: Text(
-                'Reset',
-                style: TextStyle(
-                  fontFamily: 'Euclid Circular A',
-                  color: Theme.of(context).primaryColor,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            )
-          ],
+              const SizedBox(height: 20),
+              _buildSubmitButton(context),
+            ],
+          ),
         ),
-        const SizedBox(height: 20),
-        _buildSubmitButton(context),
-      ]),
-    );
-  }
+      );
 }

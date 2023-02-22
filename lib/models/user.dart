@@ -1,11 +1,9 @@
 class User {
-  final String id;
-  final String email;
   final String token;
+  final Map<String, dynamic> data;
 
   User({
-    required this.id,
-    required this.email,
     required this.token,
+    required this.data,
   });
 }
